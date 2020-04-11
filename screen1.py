@@ -41,7 +41,7 @@ bounding_box = {'top': 100, 'left': 350, 'width': 650, 'height': 220}
 
 sct = mss()
 
-
+x=input("make sure dino the game is in right place and Enter any key to start")
 while True:
     sct_img = sct.grab(bounding_box)
     img=np.array(sct_img)
