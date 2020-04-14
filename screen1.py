@@ -2,14 +2,14 @@ import numpy as np
 import cv2
 from mss import mss
 from PIL import Image # grab screen
-from pyautogui import press, typewrite, hotkey # for keyboard
-
+from pyautogui import press, keyDown,keyUp, hotkey # for keyboard
+import time
 count =0
 dino_origin=80,170 # (x,y)
-
+first_time=0
 
 ########### change the distance between dino and points########
-dist_x=32
+dist_x=-25
 ##########################################
 
 
@@ -55,17 +55,24 @@ while True:
 
     if px_bg == [255,255,255,255]:# for white background
         if (px_d != [255,255,255,255]) or (px_d1 != [255,255,255,255]) or (px_u != [255,255,255,255]): #[255,255,255,255] for black obtracles
+            #press('space') # loooong jump
             press('space')
+            time.sleep(0.08)
+            press('down')
+
             #count=count+1
             #print("jump ", count)
             #print(px_d,"   ",px_u)           
  
-    else:# for black background
-        ##if (px_d == [172,172,172,255] or px_d == [8,8,0,255]) or (px_u == [172,172,172,255] or px_d == [8,8,0,255]): #[172,172,172,255] for grey obtracles
+    elif px_bg != [255,255,255,255]:# for black background
+        print(px_d,"   bg= ",px_bg)
+
+        ##if (px_d == [172,172,172,255] or px_d == [8,8,0,255]) or (px_u == [172,172,172,255] or px_u == [8,8,0,255]): #[172,172,172,255] for grey obtracles
         if (px_d != [0,0,0,255]) or (px_u != [0,0,0,255]):
+            #press('space') # loooong jump
             press('space')
-            count=count+1
-            #print("jump ", count)
+            time.sleep(0.08)
+            press('down')
 
     draw()
     
