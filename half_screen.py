@@ -1,4 +1,5 @@
-# this code is for fullscreen chrome dinosaure game (no internet)
+
+# this code is for half screen  http://www.trex-game.skipser.com/ game
 
 import numpy as np
 import cv2
@@ -6,20 +7,18 @@ from mss import mss
 from PIL import Image # grab screen
 from pyautogui import press, keyDown,keyUp, hotkey # for keyboard
 import time
-count =0
-dino_origin=80,170 # (x,y)
-first_time=0
 
 ########### change the distance between dino and points########
-dist_x=-25
+dist_x=25
 ##########################################
+count =0
 
+uy,ux=283,200+dist_x # PIXELS(inverted y,x) NOT COORDINATES of the point
+ly,lx=307,200+dist_x 
+ly1,lx1=317,194+dist_x
 
-uy,ux=129,170+dist_x # PIXELS(inverted y,x) NOT COORDINATES of the point
-ly,lx=154,170+dist_x 
-ly1,lx1=164,164+dist_x
+bgy,bgx=50,50 # background
 
-bgy,bgx=50,300
 #######################
 # mouse callback function for testing
 def find_value(event,x,y,flags,param):
@@ -38,7 +37,6 @@ def draw():
                    1, (0, 0, 255), 1, cv2.LINE_AA)
 ###################    
 
-        
 bounding_box = {"top": 100, "left": 0, "width": 830, "height": 500}
 
 sct = mss()
@@ -52,34 +50,16 @@ while True:
     px_d1=list(img[ly1,lx1])
     px_u=list(img[uy,ux]) # upper pixel
     px_bg=list(img[bgy,bgx])
-    #print(px_d,"   ",px_u)        
-    #print(px_bg)
 
-    if px_bg == [255,255,255,255]:# for white background not internet chrome
-        if (px_d != [255,255,255,255]) or (px_d1 != [255,255,255,255]) or (px_u != [255,255,255,255]): #[255,255,255,255] for black obtracles
+    if px_bg == [247,247,247,255]: # http://www.trex-game.skipser.com/
+        if (px_d != [247,247,247,255]) or (px_d1 != [247,247,247,255]) or (px_u != [247,247,247,255]): #[255,255,255,255] for black obtracles
             #press('space') # loooong jump
             press('space')
             time.sleep(0.08)
             press('down')
 
             #count=count+1
-            #print("jump ", count)
-            #print(px_d,"   ",px_u)           
- 
-    elif px_bg != [255,255,255,255]:# for black background
-        print(px_d,"   bg= ",px_bg)
-        ############
-        if first_time<5:
-            if (px_d != [255,255,255,255]) or (px_d1 != [255,255,255,255]) or (px_u != [255,255,255,255]): #[255,255,255,255] for black obtracles
-                press('space')
-                first_time=first_time+1
-        #######
-        ##if (px_d == [172,172,172,255] or px_d == [8,8,0,255]) or (px_u == [172,172,172,255] or px_u == [8,8,0,255]): #[172,172,172,255] for grey obtracles
-        if (px_d != [0,0,0,255]) or (px_u != [0,0,0,255]):
-            #press('space') # loooong jump
-            press('space')
-            time.sleep(0.08)
-            press('down')
+            #print("jump ", count)  
 
     draw()
     
