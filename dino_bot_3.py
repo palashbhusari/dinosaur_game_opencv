@@ -50,7 +50,7 @@ def find_value(event,x,y,flags,param):
 def roi():
     global roi0,roi1,roi2
     # # roi0 to detect obstacle
-    roi0=int(np.sum(img[py0:py0+h0,px0:px0+w0])# region o i 208,240 = x,y
+    roi0=int(np.sum(img[py0:py0+h0,px0:px0+w0]))# region o i 208,240 = x,y
     #print((np.sum(roi0)))# = 24700
     roi1=np.sum(img[py1:py1+h0,px1:px1+w0])
 

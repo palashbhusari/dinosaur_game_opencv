@@ -8,95 +8,90 @@ from pyautogui import press, keyDown,keyUp, hotkey # for keyboard
 import time
 
 
+## base line to set dinosaur game
+lx1,ly1= 180,158
+lx2,ly2= 210,158
 
-#base line to set dinosaur game
-lx1,ly1= 148,358
-lx2,ly2= 210,358
+## x from left increase to go rigth 
+## y from top increase to go down
+px0,py0= 230,138 # lower point of square
+px1,py1=230,112  # upper square
+w0,h0=5,5  # weidth and height downward of square
 
-# x from left increase to go rigth 
-# y from top increase to go down
+#pixel below dino
+px2,py2=175,148 # rect on dino on the dino
 
-###px0,py0= 215,337 # lower point of rect
-w0,h0=10,10  # weidth and height downward 
+bgx,bgy=50,130
 
-px1,py1=210,312  # upper rect
-
-px2,py2=158,337 # rect on dino on the dino
-w2,h2=70,3
-bgx,bgy=50,330
-
-def draw():
-    cv2.line(img,(lx1,ly1),(lx2,ly2),(0,0,255),2) # red line
-    cv2.circle(img, (bgx,bgy), 2, (255, 0, 0), -1)  
-    # rect in front
-    # square for cactus
-    ###cv2.rectangle(img,(px0,py0),(px0+w0,py0+h0),(0,0,255),1)   
-    # square for bird
-    cv2.rectangle(img,(px1,py1),(px1+w0,py1+h0),(0,0,255),1)
-    # rect below dino
-    cv2.rectangle(img,(px2,py2),(px2+w2,py2+h2),(0,0,255),1)
-    
-    ##points
-    #cv2.circle(img, (px0,py0), 2, (255, 0, 0), -1)  
-    #cv2.circle(img, (px1,py1), 2, (255, 0, 0), -1)  
-    #cv2.circle(img, (px2,py2), 2, (255, 0, 0), -1)
-# mouse callback function for testing
+## mouse callback function for testing
 def find_value(event,x,y,flags,param):
     if event == cv2.EVENT_LBUTTONDBLCLK:
         print(x,y)
         px=img[y,x]
         print(px)
 
+def get_image():
+    sct_img = sct.grab(bounding_box)
+    img=np.array(sct_img)
+    # Convert image to gray then black/ white
+    grayImage = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    (thresh, bwImage) = cv2.threshold(grayImage, 200, 255, cv2.THRESH_BINARY)
+    bwImage = cv2.cvtColor(bwImage, cv2.COLOR_GRAY2RGB)
+    return bwImage
 def roi():
-    global roi0,roi1,roi2
+    global roi0,roi1,px_sum
     # # roi0 to detect obstacle
-    ###roi0=int(np.sum(img[py0:py0+h0,px0:px0+w0])# region o i 208,240 = x,y
-    #print((np.sum(roi0)))# = 24700
+    roi0=int(np.sum(img[py0:py0+h0,px0:px0+w0]))# region o i 208,240 = x,y
+    #print(roi0)# = 19125 white
     roi1=np.sum(img[py1:py1+h0,px1:px1+w0])
-
-    ##roi2 to detect obstale under dino
-    roi2=int(np.sum(img[py2:py2+h2,px2:px2+w2]))# region o i 208,240 = x,y
-    #print(roi2) #=51870
+    px_list=[]
+    for i in range(0,60,4): # 2,4,6,8
+        px=sum(img[py2,px2+i])
+        px_list.append(px)
+    px_sum=sum((px_list))
     
-bounding_box = {"top": 100, "left": 0, "width": 830, "height": 500}
+def draw():
+    cv2.line(img,(lx1,ly1),(lx2,ly2),(0,0,255),2) # red line 
+    # square for cactus
+    cv2.rectangle(img,(px0,py0),(px0+w0,py0+h0),(0,0,255),1)   
+    # square for bird
+    cv2.rectangle(img,(px1,py1),(px1+w0,py1+h0),(0,0,255),1)
+    
+    ##points
+    for i in range(0,60,4):
+        cv2.circle(img, (px2+i,py2), 2, (255, 0, 0), -1)  
+
+bounding_box = {"top": 300, "left": 0, "width": 830, "height": 300}
 sct = mss()
 
 x=input("Enter any key to start")
+jump=0
 while True:
-    sct_img = sct.grab(bounding_box)
-    img=np.array(sct_img)
-    ##gray scale
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
-    ## check background pixel value
-    background=img[bgy,bgx]
-
+    img=get_image()
     roi()
-
-    ##pixel values
-    #px_d0= img[py0,px0]# lower front pixel
-    #px_d1= img[py1,px1]# upper front pixel 
-    px_d2= img[py2,px2] 
-    print(px_d2)
-    #if (px_d1 != background) or (px_d0 != background): #[255,255,255,255] for white back ground
-    if roi2 != 49902:
+    #if (px_d1 != background): #[255,255,255,255] for white back ground
+    if roi0 != 19125:
         press('space')
-        while(0):
-            sct_img = sct.grab(bounding_box)
-            img=np.array(sct_img)
-            img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-            
-            px_d2= img[py2,px2]
-
-            if roi2 == 51870: # dino in air
+        b=0
+        while(1):
+            b=b+1
+            img=get_image()
+            roi()
+            #print(px_sum)
+            if px_sum==11475:
                 press('down')
-                #print('down')
                 break
-
-    elif roi1 != 24700: # px1,py1 upper square
+            elif b>50:
+                break
+        #time.sleep(0.08)
+        #press('down')
+        jump=jump+1
+    
+    elif roi1 != 19125: # px1,py1 upper square
         keyDown('down')
         time.sleep(0.08)
         keyUp('down')
+    cv2.putText(img, str(jump), (bgx,bgy), cv2.FONT_HERSHEY_SIMPLEX,1, (0, 0, 255), 1, cv2.LINE_AA)
 
     draw()
     

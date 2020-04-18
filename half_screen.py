@@ -33,7 +33,7 @@ def draw():
     
     cv2.circle(img, (ux,uy), 2, (255, 0, 0), -1)#(216,140)lower point COORDINATES
     cv2.circle(img, (bgx,bgy), 2, (255, 0, 0), -1) # backgrund check coordinates
-    image = cv2.putText(img, 'Background', (305,50), cv2.FONT_HERSHEY_SIMPLEX,  
+    cv2.putText(img, 'Background', (305,50), cv2.FONT_HERSHEY_SIMPLEX,  
                    1, (0, 0, 255), 1, cv2.LINE_AA)
 ###################    
 
