@@ -14,12 +14,16 @@ lx2,ly2= 210,158
 
 ## x from left increase to go rigth 
 ## y from top increase to go down
-px0,py0= 230,138 # lower point of square
+px0,py0= 230,142 # lower point of square
 px1,py1=230,112  # upper square
 w0,h0=5,5  # weidth and height downward of square
 
 #pixel below dino
+dist=0
+t=True
 px2,py2=175,148 # rect on dino on the dino
+
+eyex,eyey=180,126
 
 bgx,bgy=50,130
 
@@ -56,10 +60,32 @@ def draw():
     cv2.rectangle(img,(px0,py0),(px0+w0,py0+h0),(0,0,255),1)   
     # square for bird
     cv2.rectangle(img,(px1,py1),(px1+w0,py1+h0),(0,0,255),1)
-    
+    #dino eye
+    cv2.circle(img, (eyex,eyey), 2, (0, 0, 255), -1)  
     ##points
     for i in range(0,60,4):
         cv2.circle(img, (px2+i,py2), 2, (255, 0, 0), -1)  
+def update_px():
+    global t,px0,px1
+    if (t==True) and (jump==45):
+        px0=px0+10
+        t=False
+    if (t==False)and jump==70:
+        px0=px0+10
+        t=True
+    if (t==True) and (jump==100):
+        px0=px0+10
+        px1=px1+15
+        t=False
+    if (t==False) and (jump==150):
+        px0=px0+10
+        t=True
+    if (t==True) and (jump==300):
+        px0=px0+10
+        t=False
+    if (t==False) and (jump==2000):
+        px0=px0+10
+        t=True
 
 bounding_box = {"top": 300, "left": 0, "width": 830, "height": 300}
 sct = mss()
@@ -86,11 +112,13 @@ while True:
         #time.sleep(0.08)
         #press('down')
         jump=jump+1
-    
     elif roi1 != 19125: # px1,py1 upper square
         keyDown('down')
         time.sleep(0.08)
         keyUp('down')
+
+    update_px()
+
     cv2.putText(img, str(jump), (bgx,bgy), cv2.FONT_HERSHEY_SIMPLEX,1, (0, 0, 255), 1, cv2.LINE_AA)
 
     draw()
