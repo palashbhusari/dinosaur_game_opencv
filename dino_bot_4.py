@@ -65,7 +65,8 @@ def draw():
     ##points
     for i in range(0,60,4):
         cv2.circle(img, (px2+i,py2), 2, (255, 0, 0), -1)  
-def update_px():
+
+def update_px(): # for changing speeds and updating detector dist
     global t,px0,px1
     if (t==True) and (jump==45):
         px0=px0+10
@@ -80,11 +81,11 @@ def update_px():
     if (t==False) and (jump==150):
         px0=px0+10
         t=True
-    if (t==True) and (jump==300):
+    if (t==True) and (jump==300): # mostly constant after this point
         px0=px0+10
         t=False
     if (t==False) and (jump==2000):
-        px0=px0+10
+        px0=px0+5
         t=True
 
 bounding_box = {"top": 300, "left": 0, "width": 830, "height": 300}
@@ -94,13 +95,12 @@ x=input("Enter any key to start")
 jump=0
 while True:
     img=get_image()
-    roi()
-    #if (px_d1 != background): #[255,255,255,255] for white back ground
+    roi() #get pixel data
     if roi0 != 19125:
         press('space')
         b=0
         while(1):
-            b=b+1
+            b=b+1# internal loop breaker
             img=get_image()
             roi()
             #print(px_sum)
@@ -108,7 +108,7 @@ while True:
                 press('down')
                 break
             elif b>50:
-                break
+                break # break internal loop
         #time.sleep(0.08)
         #press('down')
         jump=jump+1
@@ -116,7 +116,7 @@ while True:
         keyDown('down')
         time.sleep(0.08)
         keyUp('down')
-
+    # update detector dist
     update_px()
 
     cv2.putText(img, str(jump), (bgx,bgy), cv2.FONT_HERSHEY_SIMPLEX,1, (0, 0, 255), 1, cv2.LINE_AA)
