@@ -93,6 +93,8 @@ sct = mss()
 
 x=input("Enter any key to start")
 jump=0
+prev=0
+last_time=time.time()
 while True:
     img=get_image()
     roi() #get pixel data
@@ -118,14 +120,16 @@ while True:
         keyUp('down')
     # update detector dist
     update_px()
-
+    if jump !=prev:
+        print(jump)
+        prev=jump
+    
     cv2.putText(img, str(jump), (bgx,bgy), cv2.FONT_HERSHEY_SIMPLEX,1, (0, 0, 255), 1, cv2.LINE_AA)
-
     draw()
-    
     cv2.imshow('screen',img )
-    cv2.setMouseCallback('screen',find_value)
-    
+    #cv2.setMouseCallback('screen',find_value)
+    print("time = {}".format(time.time()-last_time))
+    last_time=time.time()
     if (cv2.waitKey(1) & 0xFF) == ord('q'):
         cv2.destroyAllWindows()
         break
